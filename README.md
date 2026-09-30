@@ -1,35 +1,87 @@
 # SEO skills
 
-A snapshot of the Agent Skills I use for SEO work with Claude Code and Codex, taken September 29, 2026. It won't be updated.
+These are the skills I give my coding agents when I want them to do SEO. They
+figure out what a site is and who it competes with, pull the analytics, decide
+what to write, and then write it in a voice that doesn't sound like AI.
+
+They work with Claude Code and Codex, and with any other agent that reads
+`SKILL.md` files.
+
+> **This is a snapshot.** I copied these out of my working setup on
+> September 29, 2026 and I won't keep this repo updated. Fork it and make it
+> yours.
 
 ## Install
 
-Copy the folders in `skills/` into your agent's skills directory:
-
 ```bash
 git clone https://github.com/parsakhaz/seo-skills.git
-cp -R seo-skills/skills/* ~/.claude/skills/    # Claude Code
-cp -R seo-skills/skills/* ~/.codex/skills/     # Codex
+
+# Claude Code
+cp -R seo-skills/skills/* ~/.claude/skills/
+
+# Codex
+cp -R seo-skills/skills/* ~/.codex/skills/
 ```
 
-## The skills
+Then open your agent inside your website's repo and ask for what you want. For
+example, "set up SEO for this site" or "what should we write next".
 
-Start with `seo-foundations` on a new site. It writes `.seo/foundations.md`, which the other skills read.
+## How they fit together
 
-| Skill | What it does |
-|-------|--------------|
-| `seo-foundations` | Crawls your site, finds competitors, maps the search landscape |
-| `seo-briefing` | Pulls analytics and search data into a prioritized briefing |
-| `seo-content-strategy` | Turns the briefing into a ranked content plan |
-| `seo-content-drafting` | Writes the blog posts, landing pages and comparison pages in the plan |
-| `seo-readability-pass` | Rewrites existing copy so a first-time reader understands it |
-| `seo-authority-pass` | Adds explainer pages, a glossary, author bylines, JSON-LD and OG images |
-| `seo-from-calls` | Mines customer call transcripts for questions your site doesn't answer |
-| `seo-writing-framework` | The research, draft, edit and score loop every writing skill follows |
-| `good-writing-fundamentals` | The line-level edit pass that cuts AI-sounding prose |
-| `seo-data-pull` | Support skill: pulls PostHog/GA4, Search Console and Ahrefs data into `.seo/data/` |
-| `seo-data-organize` | Support skill: archives `.seo/` into a dated history |
+```
+seo-foundations  →  seo-briefing  →  seo-content-strategy  →  seo-content-drafting
+   (once)             (weekly)          (you approve it)          (writes the pages)
+```
 
-The data skills use whatever analytics, Search Console and SEO tools your agent has connected, and note the gaps when a source is missing.
+1. **`seo-foundations`**: Run this once on a new site. It reads your site,
+   finds your real competitors, maps what people search for, and writes
+   `.seo/foundations.md`. Every other skill reads that file.
+2. **`seo-briefing`**: Your SEO morning report. It pulls traffic, Search
+   Console and keyword data, then tells you what's working, what's broken and
+   what to do next.
+3. **`seo-content-strategy`**: Turns the briefing into a ranked to-do list:
+   quick title fixes, pages to rewrite, and new pages to create. You approve it
+   before anything gets written.
+4. **`seo-content-drafting`**: Writes the blog posts, landing pages and
+   comparison pages from the approved plan, then submits the new URLs for
+   indexing.
 
-`good-writing-fundamentals` is adapted from [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) under the MIT license; see its `LICENSE` file.
+The agent keeps everything in a `.seo/` folder in your repo, so each run can
+see what changed since the last one.
+
+## Other skills
+
+| Skill | Use it when |
+|-------|-------------|
+| `seo-readability-pass` | Your copy sounds too technical and a newcomer wouldn't follow it |
+| `seo-authority-pass` | You want explainer pages, a glossary, author bylines and structured data so Google trusts the site |
+| `seo-from-calls` | You have sales call transcripts and want pages that answer what buyers asked |
+| `seo-writing-framework` | You're writing anything a customer reads. The other writing skills use it too |
+| `good-writing-fundamentals` | You have a draft and want the AI-sounding phrases cut out |
+| `seo-data-pull` | Runs automatically. Pulls data from whatever analytics tools you've connected |
+| `seo-data-organize` | Runs automatically. Archives `.seo/` so you can compare weeks over time |
+
+## What you'll want connected
+
+The skills use whatever your agent can reach, and they tell you what's missing
+instead of making up numbers. They get better with:
+
+- **Analytics**: PostHog, GA4, Plausible or similar
+- **Google Search Console**: what you rank for and how often people click
+- **Ahrefs or Semrush**: keywords, backlinks and competitor gaps
+
+You can start with none of these. `seo-foundations` only needs your website.
+
+## Tips
+
+- A few skills say "Run with Claude Opus 4.6" because that model wrote the best
+  copy when I made them. Use whatever model you like best.
+- Put a short voice guide in your `AGENTS.md` or `CLAUDE.md` with how you
+  talk, words you never use, and one page you love. `seo-readability-pass`
+  writes one for you if you don't have it.
+
+## Credits
+
+`good-writing-fundamentals` is adapted from Peter Yang's
+[no-ai-slop](https://github.com/petergyang/no-ai-slop) under the MIT license.
+Its `LICENSE` file is in the skill folder.
